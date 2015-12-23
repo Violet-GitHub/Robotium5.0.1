@@ -9,7 +9,7 @@ import android.widget.TimePicker;
 
 
 /**
- * 包含设置方法
+ * 设置类控件操作工具类
  * Contains set methods. Examples are setDatePicker(),
  * setTimePicker().
  * 

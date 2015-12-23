@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 
 /**
+ * 按照指定条件获取View或者其他的一些信息
  * Contains various get methods. Examples are: getView(int id),
  * getView(Class<T> classToFilterBy, int index).
  * 
@@ -192,35 +193,42 @@ class Getter {
 
 	public View getView(Object tag, int index, int timeout){
 		//Because https://github.com/android/platform_frameworks_base/blob/master/core/java/android/view/View.java#L17005-L17007
+		//null判断
 		if(tag == null) {
 			return null;
 		}
-
+		//获取当前的Activity
 		final Activity activity = activityUtils.getCurrentActivity(false);
 		View viewToReturn = null;
-
+		//index值判断,小于1全都赋值为1
 		if(index < 1){
 			index = 0;
+			//当前Activity的null判断
 			if(activity != null){
 				//Using https://github.com/android/platform_frameworks_base/blob/master/core/java/android/app/Activity.java#L2070-L2072
+				//获取当前的window
 				Window window = activity.getWindow();
+				//window的null判断
 				if(window != null) {
+					//获取decorView
 					View decorView = window.getDecorView();
 					if(decorView != null) {
+						//通过DecorView找到指定tag的view
 						viewToReturn = decorView.findViewWithTag(tag);
 					}
 				}
 			}
 		}
-
+		//判断viewToReture是否为空，并返回不为空的viewToReturn值
 		if (viewToReturn != null) {
 			return viewToReturn;
 		}
-
+		//如果没找到，通过waiter找到指定tag的view
 		return waiter.waitForView(tag, index, timeout);
 	}
 
 	/**
+	 * 通过给定的tag找到指定view
 	 * Returns a {@code View} with a given tag.
 	 *
 	 * @param tag the <code>tag</code> of the {@code View} to be returned

@@ -34,15 +34,19 @@ class WebElementCreator {
 	}
 
 	/**
+	 * 准备开始创造web element类型的textView类
 	 * Prepares for start of creating {@code TextView} objects based on web elements 
 	 */
 
 	public void prepareForStart(){
+		//设置为false，标识webelement未被创造完成
 		setFinished(false);
+		//清空webElements所有资源
 		webElements.clear();
 	}
 
 	/**
+	 * 获取当前 WebView中的WebElement
 	 * Returns an {@code ArrayList} of {@code TextView} objects based on the web elements shown
 	 * 
 	 * @return an {@code ArrayList} of {@code TextView} objects based on the web elements shown
@@ -65,6 +69,7 @@ class WebElementCreator {
 
 
 	/**
+	 * 如果所有的webElement创造完成，设置为true，否则设置为false
 	 * Set to true if all {@code TextView} objects have been created
 	 * 
 	 * @param isFinished true if all {@code TextView} objects have been created
@@ -159,20 +164,23 @@ class WebElementCreator {
 	}
 
 	/**
+	 * 检查WebView内容解析是否完成,默认超时5s,
+	 * 解析完成返回true,未完成返回false
 	 * Waits for {@code WebElement} objects to be created
 	 * 
 	 * @return true if successfully created before timout
 	 */
 
 	private boolean waitForWebElementsToBeCreated(){
+		//计算出超时时间，默认超时5s
 		final long endTime = SystemClock.uptimeMillis() + 5000;
-
+		// 检查是否超时
 		while(SystemClock.uptimeMillis() < endTime){
-
+			// 已解析完成，返回true
 			if(isFinished){
 				return true;
 			}
-
+			// 等待300ms
 			sleeper.sleepMini();
 		}
 		return false;

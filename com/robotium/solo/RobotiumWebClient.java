@@ -57,7 +57,6 @@ class RobotiumWebClient extends WebChromeClient{
 					public void run() {
 						webView.getSettings().setJavaScriptEnabled(true);
 						webView.setWebChromeClient(robotiumWebClient);
-
 					}
 				});
 			}

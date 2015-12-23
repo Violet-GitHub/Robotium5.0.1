@@ -83,10 +83,13 @@ public class Solo {
 	protected final Illustrator illustrator;
 	//waiter view text webElement fragement
 	protected final Waiter waiter;
-	//
+	//设置类控件操作工具类
 	protected final Setter setter;
+	//按照指定条件获取View或者其他的一些信息
 	protected final Getter getter;
+	//web工具类
 	protected final WebUtils webUtils;
+	
 	protected final Sender sender;
 	protected final ScreenshotTaker screenshotTaker;
 	protected final Instrumentation instrumentation;
