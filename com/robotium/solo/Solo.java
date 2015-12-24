@@ -89,8 +89,9 @@ public class Solo {
 	protected final Getter getter;
 	//web工具类
 	protected final WebUtils webUtils;
-	
+	//按键事件工具类
 	protected final Sender sender;
+	//
 	protected final ScreenshotTaker screenshotTaker;
 	protected final Instrumentation instrumentation;
 	protected final Zoomer zoomer;

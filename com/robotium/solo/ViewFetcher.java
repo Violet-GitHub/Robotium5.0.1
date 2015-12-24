@@ -131,7 +131,7 @@ class ViewFetcher {
 	}
 
 	/**
-	 * 过滤出Views中的DecorView类
+	 * 过滤出Views中的DecorView类,decorView为整个Windows界面最顶层view
 	 * Returns the most recent DecorView
 	 *
 	 * @param views the views to check
