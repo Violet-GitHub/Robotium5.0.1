@@ -357,56 +357,72 @@ class ScreenshotTaker {
 	}
 
 	/** 
-	 * 连续截图线程
+	 * 连续截图线程类
 	 * This is the thread which causes a screenshot sequence to happen
 	 * in parallel with testing.
 	 */
 	private class ScreenshotSequenceThread extends Thread {
-		//
+		//截图标识
 		private int seqno = 0;
-
+		//申明一个name值
 		private String name;
+		//申明一个间隔时间quality
 		private int quality;
+		//申明一个间隔时间frameDelay
 		private int frameDelay;
+		//最多截图数
 		private int maxFrames;
-
+		//是否还在运行判断
 		private boolean keepRunning = true;
-
+		//构造方法
 		public ScreenshotSequenceThread(String _name, int _quality, int _frameDelay, int _maxFrames) {
 			name = _name;
 			quality = _quality; 
 			frameDelay = _frameDelay;
 			maxFrames = _maxFrames;
 		}
-
+		//重写run方法
 		public void run() {
+			//循环截取maxFrames张图
 			while(seqno < maxFrames) {
+				//不符合条件停止循环
 				if(!keepRunning || Thread.interrupted()) break;
+				//截一张图
 				doScreenshot();
+				//截图数量加一
 				seqno++;
 				try {
+					//休息截图间隔时间
 					Thread.sleep(frameDelay);
 				} catch (InterruptedException e) {
 				}
 			}
 			screenshotSequenceThread = null;
 		}
-
+		
+		//截一张图
 		public void doScreenshot() {
+			//获取当前界面的DecorView
 			View v = getScreenshotView();
 			if(v == null) keepRunning = false;
+			//给图片取名
 			String final_name = name+"_"+seqno;
+			//循环截图并保存到图片保存工具类中
 			ScreenshotRunnable r = new ScreenshotRunnable(v, final_name, quality);
 			Log.d(LOG_TAG, "taking screenshot "+final_name);
+			//获取当前的Activity
 			Activity activity = activityUtils.getCurrentActivity(false);
 			if(activity != null){
+				//通过Activity调用UI线程执行操作
 				activity.runOnUiThread(r);
 			}
 			else {
+				//通过事件发送器调用UI线程，执行操作
 				instrumentation.runOnMainSync(r);
 			}
 		}
-
+		
+		//终止线程
 		public void interrupt() {
 			keepRunning = false;
 			super.interrupt();
@@ -414,35 +430,47 @@ class ScreenshotTaker {
 	}
 
 	/**
+	 * 抓取当前屏幕并发送给对应图片处理器进行相关图片处理和保存
 	 * Here we have a Runnable which is responsible for taking the actual screenshot,
 	 * and then posting the bitmap to a Handler which will save it.
 	 *
 	 * This Runnable is run on the UI thread.
 	 */
 	private class ScreenshotRunnable implements Runnable {
-
+		//申明一个view
 		private View view;
+		//申明一个name
 		private String name;
+		//申明一个间隔时间
 		private int quality;
-
+		
+		//通过构造方法赋值申明的内部类全局变量
 		public ScreenshotRunnable(final View _view, final String _name, final int _quality) {
 			view = _view;
 			name = _name;
 			quality = _quality;
 		}
-
+		
+		//实现父类run方法
 		public void run() {
+			//view的null值判断
 			if(view !=null){
+				//new一个位图类
 				Bitmap  b;
-
+				//判断view并截图
 				if(view instanceof WebView){
+					//如果是webView，获取webView的截图
 					b = getBitmapOfWebView((WebView) view);
 				}
 				else{
+					//如果不是，就获取view的截图
 					b = getBitmapOfView(view);
 				}
+				//对接到的图进行null值判断
 				if(b != null) {
+					//通过图片保存工具类，保存位图
 					screenShotSaver.saveBitmap(b, name, quality);
+					//清空b
 					b = null;
 					// Return here so that the screenshotMutex is not unlocked,
 					// since this is handled by save bitmap
@@ -451,7 +479,7 @@ class ScreenshotTaker {
 				else
 					Log.d(LOG_TAG, "NULL BITMAP!!");
 			}
-
+			//确定screenshotMutex是解锁的
 			// Make sure the screenshotMutex is unlocked
 			synchronized (screenshotMutex) {
 				screenshotMutex.notify();
@@ -460,6 +488,7 @@ class ScreenshotTaker {
 	}
 
 	/**
+	 * 保存图片，通过异步线程完成
 	 * This class is a Handler which deals with saving the screenshots on a separate thread.
 	 *
 	 * The screenshot logic by necessity has to run on the ui thread.  However, in practice
@@ -471,11 +500,16 @@ class ScreenshotTaker {
 	 *
 	 */
 	private class ScreenShotSaver extends Handler {
+		//构造方法
 		public ScreenShotSaver(HandlerThread thread) {
 			super(thread.getLooper());
 		}
 
 		/**
+		 * 保存图片,通过消息推送
+		 * bitmap  要保存的图片
+		 * name    图片名
+		 * quality 图片质量0-100
 		 * This method posts a Bitmap with meta-data to the Handler queue.
 		 *
 		 * @param bitmap the bitmap to save
@@ -483,36 +517,48 @@ class ScreenshotTaker {
 		 * @param quality the compression rate. From 0 (compress for lowest size) to 100 (compress for maximum quality).
 		 */
 		public void saveBitmap(Bitmap bitmap, String name, int quality) {
+			// 初始化构造一个消息
 			Message message = this.obtainMessage();
+			// 初始化消息属性
 			message.arg1 = quality;
 			message.obj = bitmap;
 			message.getData().putString("name", name);
+			// 发送消息，等待处理器处理
 			this.sendMessage(message);
 		}
 
 		/**
+		 * 处理收到的消息
 		 * Here we process the Handler queue and save the bitmaps.
 		 *
 		 * @param message A Message containing the bitmap to save, and some metadata.
 		 */
 		public void handleMessage(Message message) {
+			//
 			synchronized (screenshotMutex) {
+				//获取message中name的值，并赋值给局部变量name
 				String name = message.getData().getString("name");
+				//获取图片质量，并赋值给局部变量quality
 				int quality = message.arg1;
+				//获取图片，并赋值给局部变量bitmap
 				Bitmap b = (Bitmap)message.obj;
+				//b的null值判断
 				if(b != null) {
+					//保存文件
 					saveFile(name, b, quality);
+					// 释放图片缓存
 					b.recycle();
 				}
+				// 如果图片无内容，则打印日志信息
 				else {
 					Log.d(LOG_TAG, "NULL BITMAP!!");
 				}
-
 				screenshotMutex.notify();
 			}
 		}
 
 		/**
+		 * 保存文件
 		 * Saves a file.
 		 * 
 		 * @param name the name of the file
@@ -521,28 +567,37 @@ class ScreenshotTaker {
 		 * 
 		 */
 		private void saveFile(String name, Bitmap b, int quality){
+			//文件输出流
 			FileOutputStream fos = null;
+			//根据传入的字符串返回指定的文件名
 			String fileName = getFileName(name);
-
+			//获取配置的文件保存路径
 			File directory = new File(config.screenshotSavePath);
+			// 创建目录
 			directory.mkdir();
-
+			// 获取文件对象
 			File fileToSave = new File(directory,fileName);
 			try {
+				//构建一个输出流
 				fos = new FileOutputStream(fileToSave);
+				//判断文件类型是否一致
 				if(config.screenshotFileType == ScreenshotFileType.JPEG){
+					// 图片内容按照指定格式压缩，并写入指定文件，如出现异常，打印异常日志
 					if (b.compress(Bitmap.CompressFormat.JPEG, quality, fos) == false){
 						Log.d(LOG_TAG, "Compress/Write failed");
 					}
 				}
 				else{
+					// 图片内容按照指定格式压缩，并写入指定文件，如出现异常，打印异常日志
 					if (b.compress(Bitmap.CompressFormat.PNG, quality, fos) == false){
 						Log.d(LOG_TAG, "Compress/Write failed");
 					}
 				}
+				// 关闭写文件流
 				fos.flush();
 				fos.close();
 			} catch (Exception e) {
+				// 日常记录logcat日志，并打印异常堆栈
 				Log.d(LOG_TAG, "Can't save the screenshot! Requires write permission (android.permission.WRITE_EXTERNAL_STORAGE) in AndroidManifest.xml of the application under test.");
 				e.printStackTrace();
 			}

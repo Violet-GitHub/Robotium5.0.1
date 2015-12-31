@@ -159,9 +159,9 @@ class Presser{
 	}
 
 	/**
-	 * 点击一个插件
-	 * spinnerIndex
-	 * itemIndex
+	 * 点击第spinnerIndex个 Spinner的第itemIndex个Item
+	 * spinnerIndex     指定的Spinner顺序
+	 * itemIndex        指定的Item顺序,如果是正值，那么往下移动，负值往上移动
 	 * Presses on a {@link android.widget.Spinner} (drop-down menu) item.
 	 *
 	 * @param spinnerIndex the index of the {@code Spinner} menu to be used

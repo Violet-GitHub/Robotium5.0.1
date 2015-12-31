@@ -9,6 +9,7 @@ import android.net.wifi.WifiManager;
 
 
 /**
+ * 
  * Contains System methods. Examples are: setDeviceLocale(String language, String country),
  * setMobileData(Boolean turnedOn).
  * 
@@ -17,6 +18,7 @@ import android.net.wifi.WifiManager;
  */
 
 public class SystemUtils {
+	//事件发送工具类
 	private Instrumentation instrumentation;
 
 	public SystemUtils(Instrumentation instrumentation){
@@ -25,14 +27,16 @@ public class SystemUtils {
 
 
 	/**
+	 * 设置网络开关状态
 	 * Sets if mobile data should be turned on or off. Requires android.permission.CHANGE_NETWORK_STATE in the AndroidManifest.xml of the application under test.
 	 * 
 	 * @param turnedOn true if mobile data is to be turned on and false if not
 	 */
 
 	public void setMobileData(Boolean turnedOn){
+		//获取网络连接管理类
 		ConnectivityManager dataManager=(ConnectivityManager)instrumentation.getTargetContext().getSystemService(Context.CONNECTIVITY_SERVICE);
-
+		//设置网络开关状态
 		Method dataClass = null;
 		try {
 			dataClass = ConnectivityManager.class.getDeclaredMethod("setMobileDataEnabled", boolean.class);
@@ -44,6 +48,7 @@ public class SystemUtils {
 	}
 
 	/**
+	 * 设置WiFi开关状态
 	 * Sets if wifi data should be turned on or off. Requires android.permission.CHANGE_WIFI_STATE in the AndroidManifest.xml of the application under test. 
 	 *  
 	 * 

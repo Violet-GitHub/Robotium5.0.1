@@ -75,13 +75,13 @@ public class Solo {
 	protected final Scroller scroller;
 	//休息工具类
 	protected final Sleeper sleeper;
-	//
+	//划屏工具类
 	protected final Swiper swiper;
-	//
+	//屏幕点击工具类
 	protected final Tapper tapper;
-	//
+	//（屏幕画图工具类）
 	protected final Illustrator illustrator;
-	//waiter view text webElement fragement
+	//等待工具类
 	protected final Waiter waiter;
 	//设置类控件操作工具类
 	protected final Setter setter;
@@ -91,26 +91,43 @@ public class Solo {
 	protected final WebUtils webUtils;
 	//按键事件工具类
 	protected final Sender sender;
-	//
+	//截图工具类
 	protected final ScreenshotTaker screenshotTaker;
+	//Instrument,用于发送各类事件
 	protected final Instrumentation instrumentation;
+	//放大手势操作工具类
 	protected final Zoomer zoomer;
+	//(系统工具类)
 	protected final SystemUtils systemUtils;
+	// 网站地址
 	protected String webUrl = null;
+	// 相关属性配置
 	private final Config config;
+	// 横屏
 	public final static int LANDSCAPE = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE;   // 0
+	// 竖屏
 	public final static int PORTRAIT = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT;     // 1
+	// 右方向键
 	public final static int RIGHT = KeyEvent.KEYCODE_DPAD_RIGHT;
+	// 左方向键
 	public final static int LEFT = KeyEvent.KEYCODE_DPAD_LEFT;
+	// 上方向键
 	public final static int UP = KeyEvent.KEYCODE_DPAD_UP;
+	// 下方向键
 	public final static int DOWN = KeyEvent.KEYCODE_DPAD_DOWN;
+	// 回车按钮
 	public final static int ENTER = KeyEvent.KEYCODE_ENTER;
+	// Menu按钮
 	public final static int MENU = KeyEvent.KEYCODE_MENU;
+	// DEL按钮
 	public final static int DELETE = KeyEvent.KEYCODE_DEL;
+	// 关闭
 	public final static int CLOSED = 0;
+	// 打开
 	public final static int OPENED = 1;
 
 	/**
+	 * 构造函数,使用默认配置
 	 * Constructor that takes the Instrumentation object and the start Activity.
 	 *
 	 * @param instrumentation the {@link Instrumentation} instance
@@ -119,14 +136,16 @@ public class Solo {
 	 */
 
 	public Solo(Instrumentation instrumentation, Activity activity) {
+		//调用默认构造方法
 		this(new Config(), instrumentation, activity);
-		
+		//打印config命令日志
 		if(config.commandLogging){
 			Log.d(config.commandLoggingTag, "Solo("+instrumentation+", "+activity+")");
 		}	
 	}
 
 	/**
+	 * 带指定配置，不带 activity构造函数
 	 * Constructor that takes the Instrumentation and Config objects.
 	 *
 	 * @param instrumentation the {@link Instrumentation} instance
@@ -134,14 +153,16 @@ public class Solo {
 	 */
 
 	public Solo(Instrumentation instrumentation, Config config) {
+		//不带activity
 		this(config, instrumentation, null);
-		
+		//打印config命令日志
 		if(config.commandLogging){
 			Log.d(config.commandLoggingTag, "Solo("+instrumentation+", "+config+")");
 		}
 	}
 
 	/**
+	 * 构造函数，包含3个参数
 	 * Constructor that takes the Instrumentation, Config and Activity objects.
 	 *
 	 * @param instrumentation the {@link Instrumentation} instance
@@ -159,8 +180,12 @@ public class Solo {
 	}
 
 	/**
+	 * 私有构造方法，默认构造方法，包含3个参数
 	 * Private constructor.
-	 *
+	 * @param config
+	 * @param instrumentation
+	 * @param activity
+	 * 
 	 * @param config the {@link Config} instance. If {@code null} one will be created.
 	 * @param instrumentation the {@link Instrumentation} instance
 	 * @param activity the start {@link Activity} or {@code null}
@@ -198,6 +223,7 @@ public class Solo {
 		this.presser = new Presser(viewFetcher, clicker, instrumentation, sleeper, waiter, dialogUtils);
 		this.textEnterer = new TextEnterer(instrumentation, clicker, dialogUtils);
 		this.systemUtils = new SystemUtils(instrumentation);
+		//初始化方法
 		initialize();
 	}
 
@@ -223,36 +249,43 @@ public class Solo {
 	public static class Config {
 
 		/**
+		 * get is set assert enter click等方法的默认超时时间10s
 		 * The timeout length of the get, is, set, assert, enter and click methods. Default length is 10 000 milliseconds.
 		 */
 		public int timeout_small = 10000;
 
 		/**
+		 * waitFor方法的默认超时时间20s
 		 * The timeout length of the waitFor methods. Default length is 20 000 milliseconds.
 		 */
 		public int timeout_large = 20000;
 
 		/**
+		 * 截图默认保存路径/sdcard/Robotium-Screenshots/
 		 * The screenshot save path. Default save path is /sdcard/Robotium-Screenshots/.
 		 */
 		public String screenshotSavePath = Environment.getExternalStorageDirectory() + "/Robotium-Screenshots/";
 
 		/**
+		 * 截图类型，默认为jpeg
 		 * The screenshot file type, JPEG or PNG. Use ScreenshotFileType.JPEG or ScreenshotFileType.PNG. Default file type is JPEG.
 		 */
 		public ScreenshotFileType screenshotFileType = ScreenshotFileType.JPEG;
 
 		/**
+		 * get is set enter type click方法操作时，默认对scroll类型的控件拖动滚动条
 		 * Set to true if the get, is, set, enter, type and click methods should scroll. Default value is true.
 		 */
 		public boolean shouldScroll = true;
 
 		/**
+		 * 设置是否使用JavaScript执行WebElement 点击动作，默认是false
 		 * Set to true if JavaScript should be used to click WebElements. Default value is false.
 		 */
 		public boolean useJavaScriptToClickWebElements = false;
 
 		/**
+		 * 截图枚举类型jpg png
 		 * The screenshot file type, JPEG or PNG.
 		 *
 		 * @author Renas Reda, renas.reda@robotium.com
@@ -263,24 +296,28 @@ public class Solo {
 		}
 
 		/**
+		 * Activity跟踪，默认为true ？？？
 		 *  Set to true if Activity tracking should be enabled. Default value is true.
 		 */
 
 		public boolean trackActivities = true;
 		
 		/**
+		 * robotium使用webFrame，默认是document ？？？
 		 * Set the web frame to be used by Robotium. Default value is document.  
 		 */
 		
 		public String webFrame = "document";
 		
 		/**
+		 * 默认不打印命令行日志 ？？？
 		 *  Set to true if logging should be enabled. Default value is false.
 		 */
 		
 		public boolean commandLogging = false;
 		
 		/**
+		 * 命令行打印tag，默认值是robotium
 		 * The command logging tag. Default value is "Robotium".
 		 */
 		
@@ -289,6 +326,7 @@ public class Solo {
 	}
 
 	/**
+	 * 只带instrumentation参数的构造函数
 	 * Constructor that takes the instrumentation object.
 	 *
 	 * @param instrumentation the {@link Instrumentation} instance
@@ -303,6 +341,7 @@ public class Solo {
 	}
 
 	/**
+	 * 获取ActivityMonitor对象
 	 * Returns the ActivityMonitor used by Robotium.
 	 *
 	 * @return the ActivityMonitor used by Robotium
@@ -317,6 +356,7 @@ public class Solo {
 	}
 
 	/**
+	 * 获取config对象
 	 * Returns the Config used by Robotium.
 	 *
 	 * @return the Config used by Robotium
@@ -331,6 +371,7 @@ public class Solo {
 	}
 
 	/**
+	 * 获取所有Activity或者Dialog上的view数组
 	 * Returns an ArrayList of all the View objects located in the focused
 	 * Activity or Dialog.
 	 *
@@ -351,6 +392,7 @@ public class Solo {
 	}
 
 	/**
+	 * 获取所给view中所有view，包括view自己
 	 * Returns an ArrayList of the View objects contained in the parent View.
 	 *
 	 * @param parent the parent view from which to return the views
@@ -371,6 +413,7 @@ public class Solo {
 	}
 
 	/**
+	 * 返回指定view的最顶部view
 	 * Returns the absolute top parent View of the specified View.
 	 *
 	 * @param view the {@link View} whose top parent is requested
@@ -387,6 +430,7 @@ public class Solo {
 	}
 
 	/**
+	 * 等待默认字符串出现，默认超时时间20s
 	 * Waits for the specified text to appear. Default timeout is 20 seconds.
 	 *
 	 * @param text the text to wait for, specified as a regular expression
@@ -402,6 +446,7 @@ public class Solo {
 	}
 
 	/**
+	 * 等待指定text出现至少多少次，可以设置超时时间
 	 * Waits for the specified text to appear.
 	 *
 	 * @param text the text to wait for, specified as a regular expression
@@ -419,6 +464,7 @@ public class Solo {
 	}
 
 	/**
+	 *  等待指定text出现至少多少次，可以设置超时时间，并且可设置是否滚动界面
 	 * Waits for the specified text to appear.
 	 *
 	 * @param text the text to wait for, specified as a regular expression
@@ -437,6 +483,7 @@ public class Solo {
 	}
 
 	/**
+	 *  等待指定text出现至少多少次，可以设置超时时间，并且可设置是否滚动界面，是否只查找可见控件
 	 * Waits for the specified text to appear.
 	 *
 	 * @param text the text to wait for, specified as a regular expression
@@ -456,6 +503,7 @@ public class Solo {
 	}
 
 	/**
+	 * 等待一个匹配给定id的view出现，默认超时时间20s
 	 * Waits for a View matching the specified resource id. Default timeout is 20 seconds.
 	 *
 	 * @param id the R.id of the {@link View} to wait for
@@ -471,6 +519,7 @@ public class Solo {
 	}
 
 	/**
+	 * 等待匹配给定id的view出现至少多少次，可以设置默认超时时间
 	 * Waits for a View matching the specified resource id.
 	 *
 	 * @param id the R.id of the {@link View} to wait for
@@ -488,6 +537,7 @@ public class Solo {
 	}
 
 	/**
+	 * 等待匹配给定id的view出现至少多少次，可以设置默认超时时间，设置是否滚动刷新界面控件
 	 * Waits for a View matching the specified resource id.
 	 *
 	 * @param id the R.id of the {@link View} to wait for
@@ -511,6 +561,7 @@ public class Solo {
 	}
 
 	/**
+	 * 等待匹配给定tag的view，默认超时时间20s
 	 * Waits for a View matching the specified tag. Default timeout is 20 seconds.
 	 *
 	 * @param tag the {@link View#getTag() tag} of the {@link View} to wait for
@@ -526,6 +577,7 @@ public class Solo {
 	}
 
 	/**
+	 * 等待匹配给定tag的view出现至少多少次，可以设置默认超时时间
 	 * Waits for a View matching the specified tag.
 	 *
 	 * @param tag the {@link View#getTag() tag} of the {@link View} to wait for
@@ -543,6 +595,7 @@ public class Solo {
 	}
 
 	/**
+	 * 等待匹配给定tag的view出现至少多少次，可以设置默认超时时间，可设置是否滚动刷新界面控件
 	 * Waits for a View matching the specified tag
 	 *
 	 * @param tag the {@link View#getTag() tag} of the {@link View} to wait for
@@ -567,6 +620,7 @@ public class Solo {
 	}
 
 	/**
+	 * 等待匹配指定class的view，默认超时时间20s
 	 * Waits for a View matching the specified class. Default timeout is 20 seconds.
 	 *
 	 * @param viewClass the {@link View} class to wait for
@@ -582,6 +636,7 @@ public class Solo {
 	}
 
 	/**
+	 * 获取指定view，默认超时时间20s
 	 * Waits for the specified View. Default timeout is 20 seconds.
 	 *
 	 * @param view the {@link View} object to wait for
@@ -597,6 +652,7 @@ public class Solo {
 	}
 
 	/**
+	 * 等待指定view，可以指定超时时间，可以设置是否滚动刷新界面控件
 	 * Waits for the specified View.
 	 *
 	 * @param view the {@link View} object to wait for
@@ -625,6 +681,7 @@ public class Solo {
 	}
 
 	/**
+	 * 等待匹配给定class的view
 	 * Waits for a View matching the specified class.
 	 *
 	 * @param viewClass the {@link View} class to wait for
@@ -647,6 +704,7 @@ public class Solo {
 	}
 
 	/**
+	 * 等待匹配给定class的view
 	 * Waits for a View matching the specified class.
 	 *
 	 * @param viewClass the {@link View} class to wait for
@@ -670,6 +728,7 @@ public class Solo {
 	}
 
 	/**
+	 * 等待匹配给定by对象的webElement出现，默认超时20s
 	 * Waits for a WebElement matching the specified By object. Default timeout is 20 seconds.
 	 *
 	 * @param by the By object. Examples are: {@code By.id("id")} and {@code By.name("name")}
@@ -685,6 +744,7 @@ public class Solo {
 	}
 
 	/**
+	 * 等待匹配by对象的webElement对象出现，可以指定超时时间，可以设置是否滚动刷新界面控件
 	 * Waits for a WebElement matching the specified By object.
 	 *
 	 * @param by the By object. Examples are: {@code By.id("id")} and {@code By.name("name")}
@@ -702,6 +762,7 @@ public class Solo {
 	}
 
 	/**
+	 * 等待匹配给定by对象的webElement至少出现给定次数，可以设置超时时间，可以设置是否滚动刷新界面控件
 	 * Waits for a WebElement matching the specified By object.
 	 *
 	 * @param by the By object. Examples are: {@code By.id("id")} and {@code By.name("name")}
@@ -720,6 +781,7 @@ public class Solo {
 	}
 
 	/**
+	 * 根据给定的condition做等待操作，可设置超时时间
 	 * Waits for a condition to be satisfied.
 	 *
 	 * @param condition the condition to wait for
@@ -736,6 +798,7 @@ public class Solo {
 	}
 
 	/**
+	 * 在当前显示的编辑控件类中查找指定text，如果找到返回true，根据需要滚动界面刷新控件
 	 * Searches for a text in the EditText objects currently displayed and returns true if found. Will automatically scroll when needed.
 	 *
 	 * @param text the text to search for
@@ -752,6 +815,7 @@ public class Solo {
 
 
 	/**
+	 * 查找展示指定text的button，如果找到返回true，根据需要滚动刷新界面控件
 	 * Searches for a Button displaying the specified text and returns {@code true} if at least one Button
 	 * is found. Will automatically scroll when needed.
 	 *
@@ -768,6 +832,7 @@ public class Solo {
 	}
 
 	/**
+	 * 查找展示指定text的button，如果找到返回true，根据需要滚动刷新界面控件，可设置是否只查找可见button
 	 * Searches for a Button displaying the specified text and returns {@code true} if at least one Button
 	 * is found. Will automatically scroll when needed.
 	 *
@@ -785,6 +850,7 @@ public class Solo {
 	}
 
 	/**
+	 * 查找显示指定text的ToggleButton，如果存在返回true，根据需要滚动界面刷新控件
 	 * Searches for a ToggleButton displaying the specified text and returns {@code true} if at least one ToggleButton
 	 * is found. Will automatically scroll when needed.
 	 *
@@ -801,6 +867,7 @@ public class Solo {
 	}
 
 	/**
+	 * 查找显示指定text的button至少出现mininumnumberOfMatches次，根据需要滚动刷新界面控件
 	 * Searches for a Button displaying the specified text and returns {@code true} if the
 	 * searched Button is found a specified number of times. Will automatically scroll when needed.
 	 *
@@ -820,6 +887,7 @@ public class Solo {
 	}
 
 	/**
+	 * 查找显示指定text的button是否至少出现mininumNumberOfMatches次，根据需要设置滚动刷新界面控件，可设置是否只查找可见控件
 	 * Searches for a Button displaying the specified text and returns {@code true} if the
 	 * searched Button is found a specified number of times. Will automatically scroll when needed.
 	 *
@@ -840,6 +908,7 @@ public class Solo {
 	}
 
 	/**
+	 * 查找显示指定text的ToggleButton至少指定次数，根据需要滚动刷新界面控件
 	 * Searches for a ToggleButton displaying the specified text and returns {@code true} if the
 	 * searched ToggleButton is found a specified number of times. Will automatically scroll when needed.
 	 *
@@ -859,6 +928,7 @@ public class Solo {
 	}
 
 	/**
+	 * 查找给定text，限时5s，根据需要滚动刷新界面控件
 	 * Searches for the specified text and returns {@code true} if at least one item
 	 * is found displaying the expected text. Will automatically scroll when needed.
 	 *
@@ -875,6 +945,7 @@ public class Solo {
 	}
 
 	/**
+	 * 查找指定文本内容是否出现,超时5s,可配置是否只查找可见的
 	 * Searches for the specified text and returns {@code true} if at least one item
 	 * is found displaying the expected text. Will automatically scroll when needed.
 	 *
@@ -892,6 +963,7 @@ public class Solo {
 	}
 
 	/**
+	 * 查找指定文本内容是否出现,超时5s,可配置至少出现minimumNumberOfMatches次
 	 * Searches for the specified text and returns {@code true} if the searched text is found a specified
 	 * number of times. Will automatically scroll when needed.
 	 *
@@ -911,6 +983,7 @@ public class Solo {
 	}
 
 	/**
+	 * 查找指定文本内容是否出现,超时5s,可配置至少出现minimumNumberOfMatches次，是否滚动界面刷新控件
 	 * Searches for the specified text and returns {@code true} if the searched text is found a specified
 	 * number of times.
 	 *
@@ -931,6 +1004,7 @@ public class Solo {
 	}
 
 	/**
+	 * 查找指定文本内容是否出现,超时5s,可配置至少出现minimumNumberOfMatches次，是否滚动界面刷新控件，可设置是否之查找可见的
 	 * Searches for the specified text and returns {@code true} if the searched text is found a specified
 	 * number of times.
 	 *
@@ -952,6 +1026,7 @@ public class Solo {
 	}
 
 	/**
+	 * 设置当前Activity的横竖屏
 	 * Sets the Orientation (Landscape/Portrait) for the current Activity.
 	 *
 	 * @param orientation the orientation to set. <code>Solo.</code>{@link #LANDSCAPE} for landscape or
@@ -968,6 +1043,7 @@ public class Solo {
 	}
 
 	/**
+	 * 获取当前Activity
 	 * Returns the current Activity.
 	 *
 	 * @return the current Activity
@@ -982,6 +1058,7 @@ public class Solo {
 	}
 
 	/**
+	 * 判断当前活跃Activity是否是指定name
 	 * Asserts that the Activity matching the specified name is active.
 	 *
 	 * @param message the message to display if the assert fails
@@ -998,6 +1075,7 @@ public class Solo {
 	}
 
 	/**
+	 * 判断当前Activity是否是指定class
 	 * Asserts that the Activity matching the specified class is active.
 	 *
 	 * @param message the message to display if the assert fails
@@ -1016,6 +1094,7 @@ public class Solo {
 	}
 
 	/**
+	 * 判断当前Activity是否是给定的name，可是设置是否需要是新实例对象
 	 * Asserts that the Activity matching the specified name is active, with the possibility to
 	 * verify that the expected Activity is a new instance of the Activity.
 	 *
@@ -1034,6 +1113,7 @@ public class Solo {
 	}
 
 	/**
+	 * 判断当前Activity是否是给定的class，可是设置是否需要是新实例对象
 	 * Asserts that the Activity matching the specified class is active, with the possibility to
 	 * verify that the expected Activity is a new instance of the Activity.
 	 *
@@ -1053,6 +1133,7 @@ public class Solo {
 	}
 
 	/**
+	 * 判断当前内存是否到达最低状态
 	 * Asserts that the available memory is not considered low by the system.
 	 */
 
@@ -1066,6 +1147,7 @@ public class Solo {
 	}
 
 	/**
+	 * 等待对话框打开，默认超时时间20s
 	 * Waits for a Dialog to open. Default timeout is 20 seconds.
 	 *
 	 * @return {@code true} if the {@link android.app.Dialog} is opened before the timeout and {@code false} if it is not opened
@@ -1080,6 +1162,7 @@ public class Solo {
 	}
 
 	/**
+	 * 等待对话框关闭，默认超时20s
 	 * Waits for a Dialog to close. Default timeout is 20 seconds.
 	 *
 	 * @return {@code true} if the {@link android.app.Dialog} is closed before the timeout and {@code false} if it is not closed
@@ -1094,6 +1177,7 @@ public class Solo {
 	}
 
 	/**
+	 * 等待对话框打开，可设置超时时间
 	 * Waits for a Dialog to open.
 	 *
 	 * @param timeout the amount of time in milliseconds to wait
@@ -1109,6 +1193,7 @@ public class Solo {
 	}
 
 	/**
+	 * 等待对话框关闭，可设置超时时间
 	 * Waits for a Dialog to close.
 	 *
 	 * @param timeout the amount of time in milliseconds to wait
@@ -1125,6 +1210,7 @@ public class Solo {
 
 
 	/**
+	 * 模拟按实体返回键
 	 * Simulates pressing the hardware back key.
 	 */
 
@@ -1133,12 +1219,14 @@ public class Solo {
 		if(config.commandLogging){
 			Log.d(config.commandLoggingTag, "goBack()");
 		}
-		
+		//隐藏虚拟软件盘
 		hideSoftKeyboard();
+		//模拟点击实体返回键
 		sender.goBack();
 	}
 
 	/**
+	 * 点击指定坐标
 	 * Clicks the specified coordinates.
 	 *
 	 * @param x the x coordinate
@@ -1155,6 +1243,7 @@ public class Solo {
 	}
 
 	/**
+	 * 点击指定坐标指定次数，支持api要>=14
 	 * Clicks the specified coordinates rapidly a specified number of times. Requires API level >= 14.
 	 *
 	 * @param x the x coordinate
@@ -1175,6 +1264,7 @@ public class Solo {
 	}
 
 	/**
+	 * 长按指定坐标
 	 * Long clicks the specified coordinates.
 	 *
 	 * @param x the x coordinate
@@ -1190,6 +1280,7 @@ public class Solo {
 	}
 
 	/**
+	 * 长按指定坐标指定次数
 	 * Long clicks the specified coordinates for a specified amount of time.
 	 *
 	 * @param x the x coordinate
@@ -1207,6 +1298,7 @@ public class Solo {
 
 
 	/**
+	 * 点击显示给定text的button，根据需要滚动刷新界面控件
 	 * Clicks a Button displaying the specified text. Will automatically scroll when needed.
 	 *
 	 * @param text the text displayed by the {@link Button}. The parameter will be interpreted as a regular expression
@@ -1222,6 +1314,7 @@ public class Solo {
 	}
 
 	/**
+	 * 点击指定index的图片button
 	 * Clicks an ImageButton matching the specified index.
 	 *
 	 * @param index the index of the {@link ImageButton} to click. 0 if only one is available
@@ -1236,6 +1329,7 @@ public class Solo {
 	}
 
 	/**
+	 * 点击一个指定text的ToggleButton
 	 * Clicks a ToggleButton displaying the specified text.
 	 *
 	 * @param text the text displayed by the {@link ToggleButton}. The parameter will be interpreted as a regular expression
@@ -1250,6 +1344,7 @@ public class Solo {
 	}
 
 	/**
+	 * 点击一个展示指定text的MenuItem
 	 * Clicks a MenuItem displaying the specified text.
 	 *
 	 * @param text the text displayed by the MenuItem. The parameter will be interpreted as a regular expression
@@ -1265,6 +1360,7 @@ public class Solo {
 	}
 
 	/**
+	 * 点击显示指定text的菜单，可设置是否点击子菜单
 	 * Clicks a MenuItem displaying the specified text.
 	 *
 	 * @param text the text displayed by the MenuItem. The parameter will be interpreted as a regular expression
@@ -1281,6 +1377,7 @@ public class Solo {
 	}
 
 	/**
+	 * 点击指定的webElement
 	 * Clicks the specified WebElement.
 	 *
 	 * @param webElement the WebElement to click
@@ -1298,6 +1395,7 @@ public class Solo {
 	}
 
 	/**
+	 * 点击匹配指定by对象的第一个webElement
 	 * Clicks a WebElement matching the specified By object.
 	 *
 	 * @param by the By object. Examples are: {@code By.id("id")} and {@code By.name("name")}
@@ -1312,6 +1410,7 @@ public class Solo {
 	}
 
 	/**
+	 * 点击匹配指定by对象的第match个webElement，
 	 * Clicks a WebElement matching the specified By object.
 	 *
 	 * @param by the By object. Examples are: {@code By.id("id")} and {@code By.name("name")}
@@ -1327,6 +1426,7 @@ public class Solo {
 	}
 
 	/**
+	 * 点击匹配指定by对象的第match个webElement，可设置是否滚动刷新界面控件
 	 * Clicks a WebElement matching the specified By object.
 	 *
 	 * @param by the By object. Examples are: {@code By.id("id")} and {@code By.name("name")}
@@ -1343,6 +1443,7 @@ public class Solo {
 	}
 
 	/**
+	 * 点击menu中的第index个Item，Item从左往右，从上到下，每行包含3个Item
 	 * Presses a MenuItem matching the specified index. Index {@code 0} is the first item in the
 	 * first row, Index {@code 3} is the first item in the second row and
 	 * index {@code 6} is the first item in the third row.
@@ -1359,6 +1460,7 @@ public class Solo {
 	}
 
 	/**
+	 * 点击第index个menuItem，可以设置每行item个数
 	 * Presses a MenuItem matching the specified index. Supports three rows with a specified amount
 	 * of items. If itemsPerRow equals 5 then index 0 is the first item in the first row,
 	 * index 5 is the first item in the second row and index 10 is the first item in the third row.
@@ -1376,6 +1478,7 @@ public class Solo {
 	}
 
 	/**
+	 * 点击软件盘当前焦点的下一个按键
 	 * Presses the soft keyboard next button.
 	 */
 
@@ -1388,6 +1491,7 @@ public class Solo {
 	}
 
 	/**
+	 * 点击软键盘的搜索按钮
 	 * Presses the soft keyboard search button.
 	 */
 
@@ -1400,6 +1504,9 @@ public class Solo {
 	}
 
 	/**
+	 * 点击第spinnerIndex个spinner的第itemIndex个item
+	 * spinnerIndex 指定的Spinner顺序 
+	 * itemIndex 	指定的Item顺序,如果是正值，那么往下移动，负值往上移动
 	 * Presses a Spinner (drop-down menu) item.
 	 *
 	 * @param spinnerIndex the index of the {@link Spinner} menu to use
@@ -1417,6 +1524,7 @@ public class Solo {
 	}
 
 	/**
+	 * 点击指定view
 	 * Clicks the specified View.
 	 *
 	 * @param view the {@link View} to click
@@ -1432,6 +1540,9 @@ public class Solo {
 	}
 
 	/**
+	 * 点击指定的View,可设置是否需要等待view出现再点击
+	 * view         指定的view
+	 * immediately  true 直接按照view解析的坐标点击，false 先等待view出现再点击
 	 * Clicks the specified View.
 	 *
 	 * @param view the {@link View} to click
@@ -1452,6 +1563,7 @@ public class Solo {
 	}
 
 	/**
+	 * 长按指定view
 	 * Long clicks the specified View.
 	 *
 	 * @param view the {@link View} to long click
@@ -1468,6 +1580,7 @@ public class Solo {
 	}
 
 	/**
+	 * 长按指定view多长时间
 	 * Long clicks the specified View for a specified amount of time.
 	 *
 	 * @param view the {@link View} to long click
@@ -1484,6 +1597,7 @@ public class Solo {
 	}
 
 	/**
+	 * 点击显示指定text的view或者webElement，根据需要滚动刷新界面控件
 	 * Clicks a View or WebElement displaying the specified
 	 * text. Will automatically scroll when needed.
 	 *
@@ -1499,6 +1613,7 @@ public class Solo {
 	}
 
 	/**
+	 * 点击展示指定text的view或者webElement，根据需要滚动刷新界面控件，可以设置点击第几个匹配的对象
 	 * Clicks a View or WebElement displaying the specified text. Will automatically scroll when needed.
 	 *
 	 * @param text the text to click. The parameter will be interpreted as a regular expression
@@ -1514,6 +1629,7 @@ public class Solo {
 	}
 
 	/**
+	 * 点击显示指定text的view或者webElement，可以设置点击第几个匹配的对象，可以设置是否滚动刷新界面控件
 	 * Clicks a View or WebElement displaying the specified text.
 	 *
 	 * @param text the text to click. The parameter will be interpreted as a regular expression
@@ -1530,6 +1646,7 @@ public class Solo {
 	}
 
 	/**
+	 * 长按显示指定text的view或者webElement，根据需要自动滚动刷新界面控件
 	 * Long clicks a View or WebElement displaying the specified text. Will automatically scroll when needed.
 	 *
 	 * @param text the text to click. The parameter will be interpreted as a regular expression
@@ -1545,6 +1662,7 @@ public class Solo {
 	}
 
 	/**
+	 * 长按显示指定text的view或者webElement，可以设置长按第几个匹配的对象，根据需要自动滚动刷新界面控件
 	 * Long clicks a View or WebElement displaying the specified text. Will automatically scroll when needed.
 	 *
 	 * @param text the text to click. The parameter will be interpreted as a regular expression
@@ -1561,6 +1679,7 @@ public class Solo {
 	}
 
 	/**
+	 * 长按显示指定text的view或者webElement，可以设置点击第几个匹配的对象，可以设置是否滚动刷新界面控件
 	 * Long clicks a View or WebElement displaying the specified text.
 	 *
 	 * @param text the text to click. The parameter will be interpreted as a regular expression
@@ -1578,6 +1697,7 @@ public class Solo {
 	}
 
 	/**
+	 * 长按显示指定view或者webElement，可以设置点击第几个匹配的对象，可以设置长按几次
 	 * Long clicks a View or WebElement displaying the specified text.
 	 *
 	 * @param text the text to click. The parameter will be interpreted as a regular expression
@@ -1595,6 +1715,7 @@ public class Solo {
 	}
 
 	/**
+	 * 长按显示指定text的view，并等待弹框的菜单出现，选择给定index的菜单选项
 	 * Long clicks a View displaying the specified text and then selects
 	 * an item from the context menu that appears. Will automatically scroll when needed.
 	 *
@@ -1611,6 +1732,7 @@ public class Solo {
 	}
 
 	/**
+	 * 点击指定的button
 	 * Clicks a Button matching the specified index.
 	 *
 	 * @param index the index of the {@link Button} to click. {@code 0} if only one is available
@@ -1625,6 +1747,7 @@ public class Solo {
 	}
 
 	/**
+	 * 点击第index个radioButton
 	 * Clicks a RadioButton matching the specified index.
 	 *
 	 * @param index the index of the {@link RadioButton} to click. {@code 0} if only one is available
@@ -1639,6 +1762,7 @@ public class Solo {
 	}
 
 	/**
+	 * 点击第index个checkBox
 	 * Clicks a CheckBox matching the specified index.
 	 *
 	 * @param index the index of the {@link CheckBox} to click. {@code 0} if only one is available
@@ -1653,6 +1777,7 @@ public class Solo {
 	}
 
 	/**
+	 * 点击第index个EditText
 	 * Clicks an EditText matching the specified index.
 	 *
 	 * @param index the index of the {@link EditText} to click. {@code 0} if only one is available
@@ -1667,6 +1792,7 @@ public class Solo {
 	}
 
 	/**
+	 * 点击第一个列表的line行，并返回该行的所有textView类型view数组
 	 * Clicks the specified list line and returns an ArrayList of the TextView objects that
 	 * the list line is displaying. Will use the first ListView it finds.
 	 *
@@ -1683,6 +1809,7 @@ public class Solo {
 	}
 
 	/**
+	 * 点击第index个列表的line行，并返回该行所有textView类型的view数组
 	 * Clicks the specified list line in the ListView matching the specified index and
 	 * returns an ArrayList of the TextView objects that the list line is displaying.
 	 *
@@ -1700,6 +1827,7 @@ public class Solo {
 	}
 
 	/**
+	 * 长按第一个列表中的line行，并返回该行所有textView类型的view数组
 	 * Long clicks the specified list line and returns an ArrayList of the TextView objects that
 	 * the list line is displaying. Will use the first ListView it finds.
 	 *
@@ -1716,6 +1844,7 @@ public class Solo {
 	}
 
 	/**
+	 * 长按第index列表的line行，并返回该行所有textView类型的view数组
 	 * Long clicks the specified list line in the ListView matching the specified index and
 	 * returns an ArrayList of the TextView objects that the list line is displaying.
 	 *
@@ -1733,6 +1862,7 @@ public class Solo {
 	}
 
 	/**
+	 * 长按第index个列表的line行，并返回该行所有textView类型的数组，可设置长按次数
 	 * Long clicks the specified list line in the ListView matching the specified index and
 	 * returns an ArrayList of the TextView objects that the list line is displaying.
 	 *
@@ -1752,6 +1882,7 @@ public class Solo {
 	
 	
 	/**
+	 * 点击第一个RecyclerView中的第itemIndex个item，并返回该item中的所有textView
 	 * Clicks the specified item index and returns an ArrayList of the TextView objects that
 	 * the item index is displaying. Will use the first RecyclerView it finds.
 	 *
@@ -1768,6 +1899,7 @@ public class Solo {
 	}
 
 	/**
+	 * 点击第recyclerViewIndex个列表的itemIndex行，并返回该item中所有的textView
 	 * Clicks the specified item index in the RecyclerView matching the specified RecyclerView index and
 	 * returns an ArrayList of the TextView objects that the list line is displaying.
 	 *
@@ -1785,6 +1917,7 @@ public class Solo {
 	}
 
 	/**
+	 * 长按第一个recycleView中的itemIndex行，并返回该item中所有textView
 	 * Long clicks the specified item index and returns an ArrayList of the TextView objects that
 	 * the item index is displaying. Will use the first RecyclerView it finds.
 	 *
@@ -1801,6 +1934,7 @@ public class Solo {
 	}
 
 	/**
+	 * 长按第recyclerViewIndex个列表的itemIndex行，并返回该item中所有的textView
 	 * Long clicks the specified item index in the RecyclerView matching the specified RecyclerView index and
 	 * returns an ArrayList of the TextView objects that the item index is displaying.
 	 *
@@ -1818,6 +1952,7 @@ public class Solo {
 	}
 
 	/**
+	 * 长按第recyclerViewIndex个列表的itemIndex行，并返回该item中所有的textView，可以设置长按多少次
 	 * Long clicks the specified item index in the RecyclerView matching the specified RecyclerView index and
 	 * returns an ArrayList of the TextView objects that the item index is displaying.
 	 *
@@ -1836,6 +1971,7 @@ public class Solo {
 	}
 
 	/**
+	 * 点击指定id的actionBarItem
 	 * Clicks an ActionBarItem matching the specified resource id.
 	 *
 	 * @param id the R.id of the ActionBar item to click
@@ -1850,6 +1986,7 @@ public class Solo {
 	}
 
 	/**
+	 * 点击actionBar的home或者up
 	 * Clicks an ActionBar Home/Up button.
 	 */
 
@@ -1866,9 +2003,10 @@ public class Solo {
 		});
 	}
 
-	/**
-	* An Builder pattern that will allow the client to build a new illustration
-	*/
+    /**
+     * 构造一个Illustration
+     * An Builder pattern that will allow the client to build a new illustration
+     */
 
 	public Illustration.Builder createIllustrationBuilder(){
 		if(config.commandLogging){
@@ -1879,6 +2017,7 @@ public class Solo {
 	}
 
     /**
+     * 在屏幕上模仿画一个illustration
 	 * Simulate drawing an illustration on the screen. 
 	 * <br> <br>
 	 * Example of usage:
@@ -1902,6 +2041,7 @@ public class Solo {
 	}
 
 	/**
+	 * 模拟拖动操作
 	 * Simulate touching the specified location and dragging it to a new location.
 	 *
 	 *
@@ -1923,6 +2063,7 @@ public class Solo {
 	}
 
 	/**
+	 * 向下滚动
 	 * Scrolls down the screen.
 	 *
 	 * @return {@code true} if more scrolling can be performed and {@code false} if it is at the end of
@@ -1934,19 +2075,21 @@ public class Solo {
 		if(config.commandLogging){
 			Log.d(config.commandLoggingTag, "scrollDown()");
 		}
-		
+		//判断是否存在滑动类型的控件
 		View recyclerView = viewFetcher.getRecyclerView(true, 0);
-
 		if(recyclerView != null){
 			waiter.waitForViews(true, AbsListView.class, ScrollView.class, WebView.class, recyclerView.getClass());
 		}
 		else {
 			waiter.waitForViews(true, AbsListView.class, ScrollView.class, WebView.class);
 		}
+		//向下滑动
 		return scroller.scroll(Scroller.DOWN);
+		
 	}
 
 	/**
+	 * 滚动条滑动到最底部
 	 * Scrolls to the bottom of the screen.
 	 */
 
@@ -1968,6 +2111,7 @@ public class Solo {
 
 
 	/**
+	 * 向上滑动
 	 * Scrolls up the screen.
 	 *
 	 * @return {@code true} if more scrolling can be performed and {@code false} if it is at the top of
@@ -1991,6 +2135,7 @@ public class Solo {
 	}
 
 	/**
+	 * 滚动条滑动到顶部
 	 * Scrolls to the top of the screen.
 	 */
 
@@ -2011,6 +2156,7 @@ public class Solo {
 	}
 
 	/**
+	 * 指定列表向上滚动
 	 * Scrolls down the specified AbsListView.
 	 *
 	 * @param list the {@link AbsListView} to scroll
@@ -2026,6 +2172,7 @@ public class Solo {
 	}
 
 	/**
+	 * 指定列表移动到最顶部
 	 * Scrolls to the bottom of the specified AbsListView.
 	 *
 	 * @param list the {@link AbsListView} to scroll
@@ -2041,6 +2188,7 @@ public class Solo {
 	}
 
 	/**
+	 * 指定列表向下移动
 	 * Scrolls up the specified AbsListView.
 	 *
 	 * @param list the {@link AbsListView} to scroll
@@ -2056,6 +2204,7 @@ public class Solo {
 	}
 
 	/**
+	 * 指定列表移动到底部
 	 * Scrolls to the top of the specified AbsListView.
 	 *
 	 * @param list the {@link AbsListView} to scroll
@@ -2071,6 +2220,7 @@ public class Solo {
 	}
 
 	/**
+	 * 向上滚动第index个列表
 	 * Scrolls down a ListView matching the specified index.
 	 *
 	 * @param index the index of the {@link ListView} to scroll. {@code 0} if only one list is available
@@ -2086,6 +2236,7 @@ public class Solo {
 	}
 
 	/**
+	 * 拖动第index个列表到顶部
 	 * Scrolls a ListView matching the specified index to the bottom.
 	 *
 	 * @param index the index of the {@link ListView} to scroll. {@code 0} if only one list is available
@@ -2101,6 +2252,7 @@ public class Solo {
 	}
 
 	/**
+	 * 向下滚动第index个列表
 	 * Scrolls up a ListView matching the specified index.
 	 *
 	 * @param index the index of the {@link ListView} to scroll. {@code 0} if only one list is available
@@ -2116,6 +2268,7 @@ public class Solo {
 	}
 
 	/**
+	 * 滚动第index个列表到底部
 	 * Scrolls a ListView matching the specified index to the top.
 	 *
 	 * @param index the index of the {@link ListView} to scroll. {@code 0} if only one list is available
@@ -2131,6 +2284,7 @@ public class Solo {
 	}
 
 	/**
+	 * 滚动指定列表到指定行
 	 * Scroll the specified AbsListView to the specified line.
 	 *
 	 * @param absListView the {@link AbsListView} to scroll
@@ -2146,6 +2300,7 @@ public class Solo {
 	}
 
 	/**
+	 * 滚动第index个列表到line行
 	 * Scroll a AbsListView matching the specified index to the specified line.
 	 *
 	 * @param index the index of the {@link AbsListView} to scroll
@@ -2161,6 +2316,7 @@ public class Solo {
 	}
 
 	/**
+	 * 按照给定方向左右滑动，可以设置滑动比例，可以设置分多少步滑动
 	 * Scrolls horizontally.
 	 *
 	 * @param side the side to scroll; {@link #RIGHT} or {@link #LEFT}
@@ -2180,6 +2336,7 @@ public class Solo {
 	}
 
 	/**
+	 * 按照给定方向左右滑动，可以指定滑动比例
 	 * Scrolls horizontally.
 	 *
 	 * @param side the side to scroll; {@link #RIGHT} or {@link #LEFT}
@@ -2195,6 +2352,7 @@ public class Solo {
 	}
 
 	/**
+	 * 按照给定方向左右滑动
 	 * Scrolls horizontally.
 	 *
 	 * @param side the side to scroll; {@link #RIGHT} or {@link #LEFT}
@@ -2209,6 +2367,7 @@ public class Solo {
 	}
 
 	/**
+	 * 根据给定方向左右滑动给定view，可以设置滑动比例，可以设置分多少步滑动
 	 * Scrolls a View horizontally.
 	 *
 	 * @param view the View to scroll
@@ -2231,6 +2390,7 @@ public class Solo {
 	}
 
 	/**
+	 * 根据给定方向滑动view，可以设置滑动比例
 	 * Scrolls a View horizontally.
 	 *
 	 * @param view the View to scroll
@@ -2247,6 +2407,7 @@ public class Solo {
 	}
 
 	/**
+	 * 根据给定方向滑动给定view
 	 * Scrolls a View horizontally.
 	 *
 	 * @param view the View to scroll
@@ -2262,6 +2423,9 @@ public class Solo {
 	}
 
 	/**
+	 * 放大或缩小动作
+	 * 开始点比结束点大缩小
+	 * 开始点比结束点小放大
 	 * Zooms in or out if startPoint1 and startPoint2 are larger or smaller then endPoint1 and endPoint2. Requires API level >= 14.
 	 *
 	 * @param startPoint1 First "finger" down on the screen
@@ -2275,7 +2439,7 @@ public class Solo {
 		if(config.commandLogging){
 			Log.d(config.commandLoggingTag, "pinchToZoom("+startPoint1+", "+startPoint2+", "+endPoint1+", "+endPoint2+")");
 		}
-		
+		//只支持api14以上的，此处做判断
 		if (android.os.Build.VERSION.SDK_INT < 14){
 			throw new RuntimeException("pinchToZoom() requires API level >= 14");
 		}
@@ -2283,6 +2447,7 @@ public class Solo {
 	}
 
 	/**
+	 * 模拟手指划屏手势
 	 * Swipes with two fingers in a linear path determined by starting and ending points. Requires API level >= 14.
 	 *
 	 * @param startPoint1 First "finger" down on the screen
@@ -2296,15 +2461,19 @@ public class Solo {
 		if(config.commandLogging){
 			Log.d(config.commandLoggingTag, "swipe("+startPoint1+", "+startPoint2+", "+endPoint1+", "+endPoint2+")");
 		}
-		
+		//api14以上支持
 		if (android.os.Build.VERSION.SDK_INT < 14){
 			throw new RuntimeException("swipe() requires API level >= 14");
 		}
+		//模拟手指滑动
 		swiper.generateSwipeGesture(startPoint1, startPoint2, endPoint1,
 				endPoint2);
 	}
 
 	/**
+	 * 模拟画圆手势，每次转动3.6度角
+	 * center1，第一个手指位置
+	 * center2，第二个手指位置
 	 * Draws two semi-circles at the specified centers. Both circles are larger than rotateSmall(). Requires API level >= 14.
 	 *
 	 * @param center1 Center of semi-circle drawn from [0, Pi]
@@ -2316,7 +2485,7 @@ public class Solo {
 		if(config.commandLogging){
 			Log.d(config.commandLoggingTag, "rotateLarge("+center1+", "+center2+")");
 		}
-		
+		//只支持api14以上
 		if (android.os.Build.VERSION.SDK_INT < 14){
 			throw new RuntimeException("rotateLarge(PointF center1, PointF center2) requires API level >= 14");
 		}
@@ -2324,6 +2493,9 @@ public class Solo {
 	}
 
 	/**
+	 * 模拟画圆手势，每次转动36度角
+	 * center1，第一个手指的位置
+	 * center2，第二个手指的位置
 	 * Draws two semi-circles at the specified centers. Both circles are smaller than rotateLarge(). Requires API level >= 14.
 	 *
 	 * @param center1 Center of semi-circle drawn from [0, Pi]
@@ -2343,6 +2515,7 @@ public class Solo {
 	}
 
 	/**
+	 * 设置网络状态，需要改变网络状态权限
 	 * Sets if mobile data should be turned on or off. Requires android.permission.CHANGE_NETWORK_STATE in the AndroidManifest.xml of the application under test.
 	 * NOTE: Setting it to false can kill the adb connection.
 	 *
@@ -2358,6 +2531,7 @@ public class Solo {
 	}
 
 	/**
+	 * 设置wifi开关状态
 	 * Sets if wifi data should be turned on or off. Requires android.permission.CHANGE_WIFI_STATE in the AndroidManifest.xml of the application under test.
 	 *
 	 *
@@ -2374,6 +2548,7 @@ public class Solo {
 
 
 	/**
+	 * 设置第index个日期控件的日期
 	 * Sets the date in a DatePicker matching the specified index.
 	 *
 	 * @param index the index of the {@link DatePicker}. {@code 0} if only one is available
@@ -2391,6 +2566,7 @@ public class Solo {
 	}
 
 	/**
+	 * 设置指定日期控件的日期
 	 * Sets the date in the specified DatePicker.
 	 *
 	 * @param datePicker the {@link DatePicker} object
@@ -2409,6 +2585,7 @@ public class Solo {
 	}
 
 	/**
+	 * 设置第index个时间控件的时间
 	 * Sets the time in a TimePicker matching the specified index.
 	 *
 	 * @param index the index of the {@link TimePicker}. {@code 0} if only one is available
@@ -2425,6 +2602,7 @@ public class Solo {
 	}
 
 	/**
+	 * 设置指定时间控件的时间
 	 * Sets the time in the specified TimePicker.
 	 *
 	 * @param timePicker the {@link TimePicker} object
@@ -2442,6 +2620,7 @@ public class Solo {
 	}
 
 	/**
+	 * 设置第index个进度条的进度，可以设置进度值
 	 * Sets the progress of a ProgressBar matching the specified index. Examples of ProgressBars are: {@link android.widget.SeekBar} and {@link android.widget.RatingBar}.
 	 *
 	 * @param index the index of the {@link ProgressBar}
@@ -2457,6 +2636,7 @@ public class Solo {
 	}
 
 	/**
+	 * 设置指定进度条的进度，可以设置进度值
 	 * Sets the progress of the specified ProgressBar. Examples of ProgressBars are: {@link android.widget.SeekBar} and {@link android.widget.RatingBar}.
 	 *
 	 * @param progressBar the {@link ProgressBar}
@@ -2473,6 +2653,7 @@ public class Solo {
 	}
 
 	/**
+	 * 根据给定状态设置导航栏的状态
 	 * Sets the status of the NavigationDrawer. Examples of status are: {@code Solo.CLOSED} and {@code Solo.OPENED}.
 	 *
 	 * @param status the status that the {@link NavigationDrawer} should be set to
@@ -2487,6 +2668,7 @@ public class Solo {
 	}
 
 	/**
+	 * 设置第index个slidingDrawer的状态
 	 * Sets the status of a SlidingDrawer matching the specified index. Examples of status are: {@code Solo.CLOSED} and {@code Solo.OPENED}.
 	 *
 	 * @param index the index of the {@link SlidingDrawer}
@@ -2502,6 +2684,7 @@ public class Solo {
 	}
 
 	/**
+	 * 设置指定slidingDrawer的状态
 	 * Sets the status of the specified SlidingDrawer. Examples of status are: {@code Solo.CLOSED} and {@code Solo.OPENED}.
 	 *
 	 * @param slidingDrawer the {@link SlidingDrawer}
@@ -2519,6 +2702,7 @@ public class Solo {
 	}
 
 	/**
+	 * 在第index个editText中输入指定文字
 	 * Enters text in an EditText matching the specified index.
 	 *
 	 * @param index the index of the {@link EditText}. {@code 0} if only one is available
@@ -2534,6 +2718,7 @@ public class Solo {
 	}
 
 	/**
+	 * 在指定editText中输入指定text
 	 * Enters text in the specified EditText.
 	 *
 	 * @param editText the {@link EditText} to enter text in
@@ -2550,6 +2735,7 @@ public class Solo {
 	}
 
 	/**
+	 * 对符合条件的第1个WebElement，进行文本内容输入
 	 * Enters text in a WebElement matching the specified By object.
 	 *
 	 * @param by the By object. Examples are: {@code By.id("id")} and {@code By.name("name")}
@@ -2568,6 +2754,7 @@ public class Solo {
 	}
 
 	/**
+	 * 在第index个editText中输入text
 	 * Types text in an EditText matching the specified index.
 	 *
 	 * @param index the index of the {@link EditText}. {@code 0} if only one is available
@@ -2583,6 +2770,7 @@ public class Solo {
 	}
 
 	/**
+	 * 在指定editText中输入text
 	 * Types text in the specified EditText.
 	 *
 	 * @param editText the {@link EditText} to type text in
@@ -2599,6 +2787,7 @@ public class Solo {
 	}
 
 	/**
+	 * 对符合条件的第1个WebElement，进行文本内容输入
 	 * Types text in a WebElement matching the specified By object.
 	 *
 	 * @param by the By object. Examples are: {@code By.id("id")} and {@code By.name("name")}
@@ -2614,6 +2803,7 @@ public class Solo {
 	}
 
 	/**
+	 * 对符合条件的第match个WebElement,输入文本内容
 	 * Types text in a WebElement matching the specified By object.
 	 *
 	 * @param by the By object. Examples are: {@code By.id("id")} and {@code By.name("name")}
@@ -2625,13 +2815,16 @@ public class Solo {
 		if(config.commandLogging){
 			Log.d(config.commandLoggingTag, "typeTextInWebElement("+by+", \""+text+"\", "+match+")");
 		}
-		
+		// 焦点切换到对应的WebElement
 		clicker.clickOnWebElement(by, match, true, false);
+		// 隐藏软键盘
 		dialogUtils.hideSoftKeyboard(null, true, true);
+		//发送键盘内容
 		instrumentation.sendStringSync(text);
 	}
 
 	/**
+	 * 在指定的webElement中输入text
 	 * Types text in the specified WebElement.
 	 *
 	 * @param webElement the WebElement to type text in
@@ -2649,6 +2842,7 @@ public class Solo {
 	}
 
 	/**
+	 * 清除第index个editText中的值
 	 * Clears the value of an EditText.
 	 *
 	 * @param index the index of the {@link EditText} to clear. 0 if only one is available
@@ -2663,6 +2857,7 @@ public class Solo {
 	}
 
 	/**
+	 * 清除指定editText中的值
 	 * Clears the value of an EditText.
 	 *
 	 * @param editText the {@link EditText} to clear
@@ -2678,6 +2873,7 @@ public class Solo {
 	}
 
 	/**
+	 * 清除匹配by对象的webElement中的text值
 	 * Clears text in a WebElement matching the specified By object.
 	 *
 	 * @param by the By object. Examples are: {@code By.id("id")} and {@code By.name("name")}
@@ -2692,6 +2888,7 @@ public class Solo {
 	}
 
 	/**
+	 * 点击第index个imageView
 	 * Clicks an ImageView matching the specified index.
 	 *
 	 * @param index the index of the {@link ImageView} to click. {@code 0} if only one is available
@@ -2706,6 +2903,7 @@ public class Solo {
 	}
 
 	/**
+	 * 返回第index个editText
 	 * Returns an EditText matching the specified index.
 	 *
 	 * @param index the index of the {@link EditText}. {@code 0} if only one is available
@@ -2721,6 +2919,7 @@ public class Solo {
 	}
 
 	/**
+	 * 返回第index个button
 	 * Returns a Button matching the specified index.
 	 *
 	 * @param index the index of the {@link Button}. {@code 0} if only one is available
@@ -2736,6 +2935,7 @@ public class Solo {
 	}
 
 	/**
+	 * 返回第index个textView
 	 * Returns a TextView matching the specified index.
 	 *
 	 * @param index the index of the {@link TextView}. {@code 0} if only one is available
@@ -2751,6 +2951,7 @@ public class Solo {
 	}
 
 	/**
+	 * 获取定index个image
 	 * Returns an ImageView matching the specified index.
 	 *
 	 * @param index the index of the {@link ImageView}. {@code 0} if only one is available
@@ -2766,6 +2967,7 @@ public class Solo {
 	}
 
 	/**
+	 * 获取第index个ImageButton
 	 * Returns an ImageButton matching the specified index.
 	 *
 	 * @param index the index of the {@link ImageButton}. {@code 0} if only one is available
@@ -2781,6 +2983,7 @@ public class Solo {
 	}
 
 	/**
+	 * 返回显示指定text的textView
 	 * Returns a TextView displaying the specified text.
 	 *
 	 * @param text the text that is displayed, specified as a regular expression
@@ -2797,6 +3000,7 @@ public class Solo {
 	}
 
 	/**
+	 * 获取显示指定text的textView，可设置是否只查找可见的view
 	 * Returns a TextView displaying the specified text.
 	 *
 	 * @param text the text that is displayed, specified as a regular expression
@@ -2814,6 +3018,7 @@ public class Solo {
 	}
 
 	/**
+	 * 获取显示text的button
 	 * Returns a Button displaying the specified text.
 	 *
 	 * @param text the text that is displayed, specified as a regular expression
@@ -2830,6 +3035,7 @@ public class Solo {
 	}
 
 	/**
+	 * 获取显示text的button，可设置是否只查找可见button
 	 * Returns a Button displaying the specified text.
 	 *
 	 * @param text the text that is displayed, specified as a regular expression
@@ -2847,6 +3053,7 @@ public class Solo {
 	}
 
 	/**
+	 * 获取显示text的editText
 	 * Returns an EditText displaying the specified text.
 	 *
 	 * @param text the text that is displayed, specified as a regular expression
@@ -2863,6 +3070,7 @@ public class Solo {
 	}
 
 	/**
+	 * 获取显示text的EditText，可设置是否只查找可见EditText
 	 * Returns an EditText displaying the specified text.
 	 *
 	 * @param text the text that is displayed, specified as a regular expression
@@ -2880,6 +3088,7 @@ public class Solo {
 	}
 
 	/**
+	 * 获取指定id的view
 	 * Returns a View matching the specified resource id.
 	 *
 	 * @param id the R.id of the {@link View} to return
@@ -2895,6 +3104,7 @@ public class Solo {
 	}
 
 	/**
+	 * 获取指定id并且指定index的view
 	 * Returns a View matching the specified resource id and index.
 	 *
 	 * @param id the R.id of the {@link View} to return
@@ -2906,8 +3116,9 @@ public class Solo {
 		if(config.commandLogging){
 			Log.d(config.commandLoggingTag, "getView("+id+", "+index+")");
 		}
-		
+		//获取指定id和index的view
 		View viewToReturn = getter.getView(id, index);
+		//如果获取失败，则打印日志
 		if(viewToReturn == null) {
 			int match = index + 1;
 			if(match > 1){
@@ -2921,6 +3132,7 @@ public class Solo {
 	}
 
 	/**
+	 * 获取指定tag的view
 	 * Returns a View matching the specified tag.
 	 *
 	 * @param tag the tag of the {@link View} to return
@@ -2937,6 +3149,7 @@ public class Solo {
 	}
 
 	/**
+	 * 获取指定tag和index的view
 	 * Returns a View matching the specified tag and index.
 	 *
 	 * @param tag the tag of the {@link View} to return
@@ -2949,9 +3162,9 @@ public class Solo {
 		if(config.commandLogging){
 			Log.d(config.commandLoggingTag, "getView("+tag+", "+index+")");
 		}
-		
+		//获取指定tag和index的view
 		View viewToReturn = getter.getView(tag, index);
-
+		//获取失败，打印日志
 		if(viewToReturn == null) {
 			int match = index + 1;
 			if(match > 1){
@@ -2965,6 +3178,7 @@ public class Solo {
 	}
 
 	/**
+	 * 获取指定id的view
 	 * Returns a View matching the specified resource id.
 	 *
 	 * @param id the id of the {@link View} to return
@@ -2980,6 +3194,7 @@ public class Solo {
 	}
 
 	/**
+	 * 获取指定id和index的view
 	 * Returns a View matching the specified resource id and index.
 	 *
 	 * @param id the id of the {@link View} to return
@@ -3007,6 +3222,7 @@ public class Solo {
 	}
 
 	/**
+	 * 获取符合指定class类型和index的view数组
 	 * Returns a View matching the specified class and index.
 	 *
 	 * @param viewClass the class of the requested view
@@ -3023,6 +3239,7 @@ public class Solo {
 	}
 
 	/**
+	 * 获取符合by对象的和index的webElement
 	 * Returns a WebElement matching the specified By object and index.
 	 *
 	 * @param by the By object. Examples are: {@code By.id("id")} and {@code By.name("name")}
@@ -3037,7 +3254,7 @@ public class Solo {
 		
 		int match = index + 1;
 		WebElement webElement = waiter.waitForWebElement(by, match, Timeout.getSmallTimeout(), true);
-
+		//获取失败，打印日志
 		if(webElement == null) {
 			if(match > 1){
 				Assert.fail(match + " WebElements with " + webUtils.splitNameByUpperCase(by.getClass().getSimpleName()) + ": '" + by.getValue() + "' are not found!");
@@ -3050,6 +3267,7 @@ public class Solo {
 	}
 
 	/**
+	 * 获取当前的web页面URL
 	 * Returns the current web page URL.
 	 *
 	 * @return the current web page URL
@@ -3059,12 +3277,12 @@ public class Solo {
 		if(config.commandLogging){
 			Log.d(config.commandLoggingTag, "getWebUrl()");
 		}
-		
+		//获取当前的webView 
 		final WebView webView = waiter.waitForAndGetView(0, WebView.class);
-
+		//如果获取失败，打印日志
 		if(webView == null)
 			Assert.fail("WebView is not found!");
-
+		//异步线程获取webUrl
 		instrumentation.runOnMainSync(new Runnable() {
 			public void run() {
 				webUrl = webView.getUrl();
@@ -3074,6 +3292,7 @@ public class Solo {
 	}
 
 	/**
+	 * 获取当前展示在Activity或者Dialog中所有view的数组
 	 * Returns an ArrayList of the Views currently displayed in the focused Activity or Dialog.
 	 *
 	 * @return an {@code ArrayList} of the {@link View} objects currently displayed in the
@@ -3089,6 +3308,7 @@ public class Solo {
 	}
 
 	/**
+	 * 获取当前展示在Activity或Dialog中说有符合指定class的view的数组
 	 * Returns an ArrayList of Views matching the specified class located in the focused Activity or Dialog.
 	 *
 	 * @param classToFilterBy return all instances of this class. Examples are: {@code Button.class} or {@code ListView.class}
@@ -3104,6 +3324,7 @@ public class Solo {
 	}
 
 	/**
+	 * 返回当前展示在Activity或dialog上的所有符合class的view，可以设置是否查找子类
 	 * Returns an ArrayList of Views matching the specified class located in the focused Activity or Dialog.
 	 *
 	 * @param classToFilterBy return all instances of this class. Examples are: {@code Button.class} or {@code ListView.class}
@@ -3120,6 +3341,7 @@ public class Solo {
 	}
 
 	/**
+	 * 获取指定parent下的所有符合指定class的view
 	 * Returns an ArrayList of Views matching the specified class located under the specified parent.
 	 *
 	 * @param classToFilterBy return all instances of this class. Examples are: {@code Button.class} or {@code ListView.class}
@@ -3136,6 +3358,7 @@ public class Solo {
 	}
 
 	/**
+	 * 获取指定parent下的所有符合指定class的view，可以设置是否查找子类
 	 * Returns an ArrayList of Views matching the specified class located under the specified parent.
 	 *
 	 * @param classToFilterBy return all instances of this class. Examples are: {@code Button.class} or {@code ListView.class}
@@ -3152,6 +3375,7 @@ public class Solo {
 	}
 
 	/**
+	 * 获取webView上的所有webElement的数组
 	 * Returns an ArrayList of all the WebElements displayed in the active WebView.
 	 *
 	 * @return an {@code ArrayList} of all the {@link WebElement} objects currently displayed in the active WebView
@@ -3166,6 +3390,7 @@ public class Solo {
 	}
 
 	/**
+	 * 获取所有符合by对象的webView上的webElement的数组
 	 * Returns an ArrayList of all the WebElements displayed in the active WebView matching the specified By object.
 	 *
 	 * @param by the By object. Examples are: {@code By.id("id")} and {@code By.name("name")}
@@ -3181,6 +3406,7 @@ public class Solo {
 	}
 
 	/**
+	 * 获取当前webView上的所有webElement的数组
 	 * Returns an ArrayList of the currently displayed WebElements in the active WebView.
 	 *
 	 * @return an {@code ArrayList} of the {@link WebElement} objects displayed in the active WebView
@@ -3195,6 +3421,7 @@ public class Solo {
 	}
 
 	/**
+	 * 获取当前符合by对象的webView上的所有webElement的数组
 	 * Returns an ArrayList of the currently displayed WebElements in the active WebView matching the specified By object.
 	 *
 	 * @param by the By object. Examples are: {@code By.id("id")} and {@code By.name("name")}
@@ -3210,6 +3437,7 @@ public class Solo {
 	}
 
 	/**
+	 * 判断第index个radioButtonChecked是否选中
 	 * Checks if a RadioButton matching the specified index is checked.
 	 *
 	 * @param index of the {@link RadioButton} to check. {@code 0} if only one is available
@@ -3226,6 +3454,7 @@ public class Solo {
 	}
 
 	/**
+	 * 判断展示text的radioButtonCheked是否选中
 	 * Checks if a RadioButton displaying the specified text is checked.
 	 *
 	 * @param text the text that the {@link RadioButton} displays, specified as a regular expression
@@ -3242,6 +3471,7 @@ public class Solo {
 	}
 
 	/**
+	 * 判断第index个checkbox是否选中
 	 * Checks if a CheckBox matching the specified index is checked.
 	 *
 	 * @param index of the {@link CheckBox} to check. {@code 0} if only one is available
@@ -3258,6 +3488,7 @@ public class Solo {
 	}
 
 	/**
+	 * 判断显示text的ToggleButton是否选中
 	 * Checks if a ToggleButton displaying the specified text is checked.
 	 *
 	 * @param text the text that the {@link ToggleButton} displays, specified as a regular expression
@@ -3274,6 +3505,7 @@ public class Solo {
 	}
 
 	/**
+	 * 判断第index个toggleButton是否选中
 	 * Checks if a ToggleButton matching the specified index is checked.
 	 *
 	 * @param index of the {@link ToggleButton} to check. {@code 0} if only one is available
@@ -3290,6 +3522,7 @@ public class Solo {
 	}
 
 	/**
+	 * 判断显示text的checkBox是否选中
 	 * Checks if a CheckBox displaying the specified text is checked.
 	 *
 	 * @param text the text that the {@link CheckBox} displays, specified as a regular expression
@@ -3306,6 +3539,7 @@ public class Solo {
 	}
 
 	/**
+	 * 判断指定text的选择框是否选中
 	 * Checks if the specified text is checked.
 	 *
 	 * @param text the text that the {@link CheckedTextView} or {@link CompoundButton} objects display, specified as a regular expression
@@ -3330,6 +3564,7 @@ public class Solo {
 	}
 
 	/**
+	 * 判断显示text的下拉框选项是否选中
 	 * Checks if the specified text is selected in any Spinner located in the current screen.
 	 *
 	 * @param text the text that is expected to be selected, specified as a regular expression
@@ -3346,6 +3581,7 @@ public class Solo {
 	}
 
 	/**
+	 * 判断第index个下拉框中的text选项是否选中
 	 * Checks if the specified text is selected in a Spinner matching the specified index.
 	 *
 	 * @param index the index of the spinner to check. {@code 0} if only one spinner is available
@@ -3363,6 +3599,7 @@ public class Solo {
 	}
 
 	/**
+	 * 隐藏虚拟软键盘
 	 * Hides the soft keyboard.
 	 */
 
@@ -3375,6 +3612,7 @@ public class Solo {
 	}
 
 	/**
+	 * 屏幕解锁
 	 * Unlocks the lock screen.
 	 */
 
@@ -3382,8 +3620,9 @@ public class Solo {
 		if(config.commandLogging){
 			Log.d(config.commandLoggingTag, "unlockScreen()");
 		}
-		
+		//获取当前的Activity
 		final Activity activity = activityUtils.getCurrentActivity(false);
+		//通过异步线程解锁
 		instrumentation.runOnMainSync(new Runnable() {
 			@Override
 			public void run() {
@@ -3395,6 +3634,7 @@ public class Solo {
 	}
 
 	/**
+	 * 模拟发送左右上下确定菜单删除等按键事件
 	 * Sends a key: Right, Left, Up, Down, Enter, Menu or Delete.
 	 *
 	 * @param key the key to be sent. Use {@code Solo.}{@link #RIGHT}, {@link #LEFT}, {@link #UP}, {@link #DOWN},
@@ -3411,6 +3651,7 @@ public class Solo {
 	}
 
 	/**
+	 * 去到指定name的Activity界面
 	 * Returns to an Activity matching the specified name.
 	 *
 	 * @param name the name of the {@link Activity} to return to. Example is: {@code "MyActivity"}
@@ -3425,6 +3666,7 @@ public class Solo {
 	}
 
 	/**
+	 * 等待指定Activity出现，默认超时间20s
 	 * Waits for an Activity matching the specified name. Default timeout is 20 seconds.
 	 *
 	 * @param name the name of the {@code Activity} to wait for. Example is: {@code "MyActivity"}
@@ -3440,6 +3682,7 @@ public class Solo {
 	}
 
 	/**
+	 * 等待指定name的Activity出现，默认超时时间20s
 	 * Waits for an Activity matching the specified name.
 	 *
 	 * @param name the name of the {@link Activity} to wait for. Example is: {@code "MyActivity"}
@@ -3457,6 +3700,7 @@ public class Solo {
 	}
 
 	/**
+	 * 等待指定class类型的Activity出现，默认超时时间20s
 	 * Waits for an Activity matching the specified class. Default timeout is 20 seconds.
 	 *
 	 * @param activityClass the class of the {@code Activity} to wait for. Example is: {@code MyActivity.class}
@@ -3472,6 +3716,7 @@ public class Solo {
 	}
 
 	/**
+	 * 等待指定class类型的Activity出现，默认超时时间20s
 	 * Waits for an Activity matching the specified class.
 	 *
 	 * @param activityClass the class of the {@code Activity} to wait for. Example is: {@code MyActivity.class}
@@ -3490,6 +3735,7 @@ public class Solo {
 
 
 	/**
+	 * 等待Activity栈清空，可设置超时时间
 	 * Wait for the activity stack to be empty.
 	 *
 	 * @param timeout the amount of time in milliseconds to wait
@@ -3501,17 +3747,19 @@ public class Solo {
 		if(config.commandLogging){
 			Log.d(config.commandLoggingTag, "waitForEmptyActivityStack("+timeout+")");
 		}
-		
+		//异步查看Activity是否清空
 		return waiter.waitForCondition(
 				new Condition(){
 					@Override
 					public boolean isSatisfied() {
+						//检查Activity栈是否是空的
 						return activityUtils.isActivityStackEmpty();
 					}
 				}, timeout);
 	}
 
 	/**
+	 * 等待给定tag的fragment出现，默认超时时间是20s
 	 * Waits for a Fragment matching the specified tag. Default timeout is 20 seconds.
 	 *
 	 * @param tag the name of the tag
@@ -3527,6 +3775,7 @@ public class Solo {
 	}
 
 	/**
+	 * 等待指定tag的fragment出现，可设置超时时间
 	 * Waits for a Fragment matching the specified tag.
 	 *
 	 * @param tag the name of the tag
@@ -3543,6 +3792,7 @@ public class Solo {
 	}
 
 	/**
+	 * 等待指定id的fragment出现，默认超时时间20s
 	 * Waits for a Fragment matching the specified resource id. Default timeout is 20 seconds.
 	 *
 	 * @param id the R.id of the fragment
@@ -3558,6 +3808,7 @@ public class Solo {
 	}
 
 	/**
+	 * 等待指定id的fragment出现，可设置超时时间
 	 * Waits for a Fragment matching the specified resource id.
 	 *
 	 * @param id the R.id of the fragment
@@ -3574,6 +3825,7 @@ public class Solo {
 	}
 
 	/**
+	 * 等待指定logMessage的LogMessage出现，默认超时时间20s
 	 * Waits for the specified log message to appear. Default timeout is 20 seconds.
 	 * Requires read logs permission (android.permission.READ_LOGS) in AndroidManifest.xml of the application under test.
 	 *
@@ -3592,6 +3844,7 @@ public class Solo {
 	}
 
 	/**
+	 * 等待指定logMessage的LogMessage出现，可设置超时时间
 	 * Waits for the specified log message to appear.
 	 * Requires read logs permission (android.permission.READ_LOGS) in AndroidManifest.xml of the application under test.
 	 *
@@ -3611,6 +3864,7 @@ public class Solo {
 	}
 
 	/**
+	 * 清空log
 	 * Clears the log.
 	 */
 
@@ -3623,6 +3877,7 @@ public class Solo {
 	}
 
 	/**
+	 * 获取指定id的string
 	 * Returns a localized String matching the specified resource id.
 	 *
 	 * @param id the R.id of the String
@@ -3639,6 +3894,7 @@ public class Solo {
 	}
 
 	/**
+	 * 返回指定id的string
 	 * Returns a localized String matching the specified resource id.
 	 *
 	 * @param id the id of the String
@@ -3655,6 +3911,7 @@ public class Solo {
 	}
 
 	/**
+	 * 设置休息时间，单位ms
 	 * Robotium will sleep for the specified time.
 	 *
 	 * @param time the time in milliseconds that Robotium should sleep
@@ -3670,7 +3927,7 @@ public class Solo {
 	}
 
 	/**
-	 *
+	 * solo生命周期结束，释放相关资源
 	 * Finalizes the Solo object and removes the ActivityMonitor.
 	 *
 	 * @see #finishOpenedActivities() finishOpenedActivities() to close the activities that have been active
@@ -3685,6 +3942,7 @@ public class Solo {
 	}
 
 	/**
+	 * 关闭所有打开的activity
 	 * The Activities that are alive are finished. Usually used in tearDown().
 	 */
 
@@ -3697,6 +3955,7 @@ public class Solo {
 	}
 
 	/**
+	 * 截屏并保存在配置的路径，截图需要android.permission.WRITE_EXTERNAL_STORAGE 权限
 	 * Takes a screenshot and saves it in the {@link Config} objects save path (default set to: /sdcard/Robotium-Screenshots/).
 	 * Requires write permission (android.permission.WRITE_EXTERNAL_STORAGE) in AndroidManifest.xml of the application under test.
 	 */
@@ -3710,6 +3969,7 @@ public class Solo {
 	}
 
 	/**
+	 * 截屏并保存在配置的目录，用给定的name给图片命名
 	 * Takes a screenshot and saves it with the specified name in the {@link Config} objects save path (default set to: /sdcard/Robotium-Screenshots/).
 	 * Requires write permission (android.permission.WRITE_EXTERNAL_STORAGE) in AndroidManifest.xml of the application under test.
 	 *
@@ -3725,6 +3985,7 @@ public class Solo {
 	}
 
 	/**
+	 * 截屏并保存在配置的目录，用给定的name给图片命名，可以设置图片的质量
 	 * Takes a screenshot and saves the image with the specified name in the {@link Config} objects save path (default set to: /sdcard/Robotium-Screenshots/).
 	 * Requires write permission (android.permission.WRITE_EXTERNAL_STORAGE) in AndroidManifest.xml of the application under test.
 	 *
@@ -3741,6 +4002,7 @@ public class Solo {
 	}
 
 	/**
+	 * 连续截图，并用给定的name给图片做命名前缀
 	 * Takes a screenshot sequence and saves the images with the specified name prefix in the {@link Config} objects save path (default set to: /sdcard/Robotium-Screenshots/).
 	 *
 	 * The name prefix is appended with "_" + sequence_number for each image in the sequence,
@@ -3768,6 +4030,11 @@ public class Solo {
 	}
 
 	/**
+	 * 连续截图
+	 * name    		截图保存的图片名.会追加_0---maxFrames-1
+	 * quality 		截图质量0-100
+	 * frameDelay   每次截图时间间隔
+	 * maxFrames    截图数量 
 	 * Takes a screenshot sequence and saves the images with the specified name prefix in the {@link Config} objects save path (default set to: /sdcard/Robotium-Screenshots/).
 	 *
 	 * The name prefix is appended with "_" + sequence_number for each image in the sequence,
@@ -3799,6 +4066,7 @@ public class Solo {
 	}
 
 	/**
+	 * 停止连续截图
 	 * Causes a screenshot sequence to end.
 	 *
 	 * If this method is not called to end a sequence and a prior sequence is still in
@@ -3815,6 +4083,7 @@ public class Solo {
 
 
 	/**
+	 * 初始化默认最小最大超时时间
 	 * Initialize timeout using 'adb shell setprop' or use setLargeTimeout() and setSmallTimeout(). Will fall back to the default values set by {@link Config}.
 	 */
 
@@ -3828,6 +4097,7 @@ public class Solo {
 	}
 
 	/**
+	 * 获取系统属性，如未设置，则使用默认值
 	 * Parse a timeout value set using adb shell.
 	 *
 	 * There are two options to set the timeout. Set it using adb shell (requires root access):
@@ -3849,11 +4119,16 @@ public class Solo {
 	private static int initializeTimeout(String property, int defaultValue) {
 
 		try {
+			// 反射获取系统变量设置类
 			Class clazz = Class.forName("android.os.SystemProperties");
+			// 获取获取属性方法
 			Method method = clazz.getDeclaredMethod("get", String.class);
+			// 获取相关属性
 			String value = (String) method.invoke(null, property);
+			// 返回找到的值
 			return Integer.parseInt(value);
 		} catch (Exception e) {
+			// 找不到使用默认值
 			return defaultValue;
 		}
 	}

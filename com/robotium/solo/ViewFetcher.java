@@ -47,7 +47,7 @@ class ViewFetcher {
 
 
 	/**
-	 * 获取View最顶部的父类
+	 * 获取view类的mParent属性
 	 * Returns the absolute top parent {@code View} in for a given {@code View}.
 	 *
 	 * @param view the {@code View} whose top parent is requested

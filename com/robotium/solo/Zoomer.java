@@ -7,24 +7,36 @@ import android.view.MotionEvent.PointerProperties;
 import android.view.MotionEvent.PointerCoords;
 import android.graphics.PointF;
 
-
+/**
+ * 放大手势操作工具类
+ * @author chenqianjiao
+ *
+ */
 class Zoomer {
-	
+	//事件发送工具类
 	private final Instrumentation _instrument;
+	// 手势持续时间1s
 	public static final int GESTURE_DURATION_MS = 1000;
-    public static final int EVENT_TIME_INTERVAL_MS = 10;
+	// 事件间隔10ms
+	public static final int EVENT_TIME_INTERVAL_MS = 10;
 	
 	public Zoomer(Instrumentation inst)
 	{
 		this._instrument = inst;
 	}
-
+	/**
+	 * 发送放大动作
+	 * @param startPoint1  开始坐标点1
+	 * @param startPoint2  开始坐标点2
+	 * @param endPoint1  结束坐标点1
+	 * @param endPoint2  结束坐标点2
+	 */
 	public void generateZoomGesture(PointF startPoint1, PointF startPoint2, PointF endPoint1, PointF endPoint2) 
 	{
-
+		 // 初始化时间变量
 		 long downTime = SystemClock.uptimeMillis();
          long eventTime = SystemClock.uptimeMillis();
-
+         // 获取相关坐标值
          float startX1 = startPoint1.x;
          float startY1 = startPoint1.y;
          float startX2 = startPoint2.x;
@@ -42,7 +54,7 @@ class Zoomer {
          //pointer 2
          float x2 = startX2;
          float y2 = startY2; 
-
+         //构造相关坐标点集合，把start1和start2的坐标放在pointerCoords容器中
          PointerCoords[] pointerCoords = new PointerCoords[2];
          PointerCoords pc1 = new PointerCoords();
          PointerCoords pc2 = new PointerCoords();
@@ -56,7 +68,7 @@ class Zoomer {
          pc2.size = 1;
          pointerCoords[0] = pc1;
          pointerCoords[1] = pc2;
-
+         //在poinerProperties容器中放入2个pointerProper对象
          PointerProperties[] pointerProperties = new PointerProperties[2];
          PointerProperties pp1 = new PointerProperties();
          PointerProperties pp2 = new PointerProperties();
@@ -67,6 +79,7 @@ class Zoomer {
          pointerProperties[0] = pp1;
          pointerProperties[1] = pp2;
 
+         // 开始发送按下事件
          MotionEvent event;
          // send the initial touches
          event = MotionEvent.obtain( downTime,
@@ -79,6 +92,7 @@ class Zoomer {
                                      1, // x precision
                                      1, // y precision
                                      0, 0, 0, 0 ); // deviceId, edgeFlags, source, flags
+         //发送按下事件
          _instrument.sendPointerSync(event);
 
          event = MotionEvent.obtain( downTime,
@@ -91,15 +105,16 @@ class Zoomer {
                                      1,
                                      1,
                                      0, 0, 0, 0 );
+         //发送
          _instrument.sendPointerSync(event);
-
+         // 计算动作步骤 100步
          int numMoves = GESTURE_DURATION_MS / EVENT_TIME_INTERVAL_MS;
-
+         // 计算每步移动的坐标值
          float stepX1 = (endX1 - startX1) / numMoves;
          float stepY1 = (endY1 - startY1) / numMoves;
          float stepX2 = (endX2 - startX2) / numMoves;
          float stepY2 = (endY2 - startY2) / numMoves;
-
+         // 发送构造好的事件
          // send the zoom
          for (int i = 0; i < numMoves; i++)
          {
@@ -108,7 +123,7 @@ class Zoomer {
              pointerCoords[0].y += stepY1;
              pointerCoords[1].x += stepX2;
              pointerCoords[1].y += stepY2;
-
+             
              event = MotionEvent.obtain( downTime,
                                          eventTime,
                                          MotionEvent.ACTION_MOVE,

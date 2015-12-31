@@ -428,7 +428,7 @@ class Clicker {
 	}
 
 	/**
-	 * 点击ActionBar的huome或者up键
+	 * 点击ActionBar的home或者up键
 	 * Clicks on an ActionBar Home/Up button.
 	 */
 

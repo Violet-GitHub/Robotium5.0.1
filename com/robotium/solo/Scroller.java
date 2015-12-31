@@ -307,7 +307,7 @@ class Scroller {
 		if(absListView == null){
 			return false;
 		}
-		//向下移动
+		//列表向上移动
 		if (direction == DOWN) {
 			//获取ListView中的view数量
 			int listCount = absListView.getCount();
@@ -335,7 +335,7 @@ class Scroller {
 			// 当可见的只有一行时，拖动到下面一行
 			else
 				scrollListToLine(absListView, firstVisiblePosition + 1);
-		//向上移动
+		//列表向下移动
 		} else if (direction == UP) {
 			//获取第一行
 			int firstVisiblePosition = absListView.getFirstVisiblePosition();
