@@ -295,7 +295,7 @@ class Clicker {
 
 
 	/**
-	 * 长按指定text内容的第1个View,等待弹框出现，向下 按键index次，再点击回车键.确认
+	 * 长按指定text的第1个View,等待弹框出现，向下 按键index次，再点击回车键.确认
 	 * Long clicks on a specific {@link TextView} and then selects
 	 * an item from the context menu that appears. Will automatically scroll when needed.
 	 *

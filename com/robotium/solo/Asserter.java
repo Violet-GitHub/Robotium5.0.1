@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.app.ActivityManager;
 
 /**
+ * 断言工具类，判断Activity，内存等
  * Contains assert methods examples are assertActivity() and assertLowMemory().
  * 
  * @author Renas Reda, renas.reda@robotium.com
@@ -44,12 +45,13 @@ class Asserter {
 	public void assertCurrentActivity(String message, String name) {
 		//使用wait工具等待期望的Activity出现，直接获取堆栈栈顶的Activity，默认等待时间10s
 		boolean foundActivity = waiter.waitForActivity(name);
-		
+		//如果未出现，则给出message提示
 		if(!foundActivity){
 			//通过ActivityUtils工具类获取当前的Activity
 			Activity activity = activityUtils.getCurrentActivity();
+			//对Activity进行null判断
 			if(activity != null){
-				//如果期望的断言未找到，则用断言提示异常
+				//通过assert比较Activity的名字和name值，是否相同。
 				Assert.assertEquals(message, name, activity.getClass().getSimpleName());	
 			}
 			//如果未找到任何的Activity，则提示No Activity found
@@ -94,7 +96,7 @@ class Asserter {
 
 	/**
 	 * 判断当前class类名是否为预期的Activity的类名
-	 * message 断言判断失败后，给出message中的提示；
+	 * message 断言判断失败后，给出message中的提示
 	 * name activity的名字
 	 * isNewInstance 为true则等待最新出现的activity,为false则直接获取activity堆栈的栈顶activity做比较
 	 * Asserts that an expected {@link Activity} is currently active one, with the possibility to
@@ -106,13 +108,13 @@ class Asserter {
 	 */
 
 	public void assertCurrentActivity(String message, String name, boolean isNewInstance) {
-		//通过Activity名判断当前Activity是不是预期想要的
+		//通过Activity名判断当前Activity是不是预期的
 		assertCurrentActivity(message, name);
 		//通过ActivityUtils工具获取当前Activity；
 		Activity activity = activityUtils.getCurrentActivity();
 		//如果获取结果不为空值
 		if(activity != null){
-			//
+			//判断当前class类是否是期望的Activity
 			assertCurrentActivity(message, activity.getClass(),
 					isNewInstance);	
 		}

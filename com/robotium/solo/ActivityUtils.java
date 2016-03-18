@@ -25,7 +25,7 @@ import android.view.KeyEvent;
  */
 
 class ActivityUtils {
-	//
+	//robotium的配置文件
 	private final Config config;
 	//Instrument 各种事件发送强大利器
 	private final Instrumentation inst;

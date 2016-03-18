@@ -408,7 +408,7 @@ public class Solo {
 			return viewFetcher.getViews(parent, false);
 		} catch (Exception e) {
 			e.printStackTrace();
-			return null;
+			return null; 
 		}
 	}
 
